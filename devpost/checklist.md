@@ -9,7 +9,7 @@ Build mode: fast
 
 ## Slices
 
-- [ ] **1. Generate a prioritized workflow**
+- [x] **1. Generate a prioritized workflow**
   Becomes usable: A user can enter a business request and see a prioritized task list in the browser.
   Why now: Proves the core idea immediately and checks AI connectivity early.
   PRD ref: `prd.md > Workflow Generation`, `prd.md > The Core Journey`
@@ -71,4 +71,5 @@ Reflection: Pending
 Activity mode: Pending
 
 ## Revisions
+
 
