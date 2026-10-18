@@ -19,7 +19,7 @@ Build mode: fast
   Learner check: Open http://localhost:3000, enter a business request, and confirm tasks appear with priorities and the correct AI or demo label.
   Commit: `Build workflow generation`
 
-- [ ] **2. Complete and reopen tasks**
+- [x] **2. Complete and reopen tasks**
   Becomes usable: Users can check and uncheck generated tasks.
   Why now: Makes the workflow interactive without adding accounts or storage.
   PRD ref: `prd.md > Task Completion`
@@ -29,7 +29,7 @@ Build mode: fast
   Learner check: Mark a task complete, then uncheck it and confirm its state changes.
   Commit: `Add task completion tracking`
 
-- [ ] **3. Translate workflow tasks**
+- [x] **3. Translate workflow tasks**
   Becomes usable: Users can display tasks in English or Spanish while preserving completion states.
   Why now: Completes the core bilingual workflow.
   PRD ref: `prd.md > Language Translation`
@@ -39,7 +39,7 @@ Build mode: fast
   Learner check: Translate a workflow, switch back to English, and confirm completed tasks remain checked.
   Commit: `Add bilingual workflow translation`
 
-- [ ] **4. Polish and handle errors**
+- [x] **4. Polish and handle errors**
   Becomes usable: A responsive dashboard that handles empty input, loading, service failures, and retrying.
   Why now: Prepares the completed workflow for demonstration and review.
   PRD ref: `prd.md > States and Boundaries`, `prd.md > Look and Feel`
@@ -71,5 +71,8 @@ Reflection: Pending
 Activity mode: Pending
 
 ## Revisions
+
+
+
 
 

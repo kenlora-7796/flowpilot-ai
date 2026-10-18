@@ -3,3 +3,8 @@
 .env.*
 !.env.example
 node_modules/
+
+# Local development backups
+slice3-backup-*/
+server.slice4-backup.js
+public/style.slice4-backup.css
