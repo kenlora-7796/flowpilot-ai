@@ -49,8 +49,54 @@ async function generate(request) {
   return {mode:'ai',notice:'Generated with Gemini AI',tasks:parseTasks(text)};
  } finally {clearTimeout(timeout);}
 }
+
+function demoTranslations(tasks) {
+ const templates = [
+  'Aclarar el objetivo y los criterios de exito para: ',
+  'Enumerar los recursos y las personas necesarias para: ',
+  'Dividir la solicitud en pasos concretos y asignar responsables: ',
+  'Establecer un calendario realista y revisar el progreso',
+  'Documentar los resultados e identificar mejoras'
+ ];
+ return tasks.map((task, index) => {
+  const original = String(task.descriptionEnglish || '');
+  const subject = original.includes(': ') ? original.split(': ').slice(1).join(': ') : original;
+  return index < 3 ? templates[index] + subject : (templates[index] || original);
+ });
+}
+async function translateTasks(tasks, mode) {
+ if(mode === 'demo') return {mode:'demo',translations:demoTranslations(tasks),notice:'DEMO MODE - sample Spanish templates; request text may remain in English.'};
+ const key = process.env.GEMINI_API_KEY;
+ if(!key) throw new Error('Gemini key unavailable; cannot translate live AI tasks');
+ const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+ const controller = new AbortController();
+ const timeout = setTimeout(() => controller.abort(), 15000);
+ try {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+   method:'POST', signal:controller.signal,
+   headers:{'Content-Type':'application/json','x-goog-api-key':key},
+   body:JSON.stringify({
+    contents:[{parts:[{text:'Translate each English task into natural Spanish, preserving meaning and order. Return only JSON: {"translations":["...", "..."]}. Do not add tasks. Tasks: '+JSON.stringify(tasks.map(t=>t.descriptionEnglish))}]}],
+    generationConfig:{responseMimeType:'application/json'}
+   })
+  });
+  if(!response.ok) throw new Error('Translation service returned HTTP '+response.status);
+  const data=await response.json();
+  const raw=data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('');
+  const parsed=JSON.parse(raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,''));
+  if(!Array.isArray(parsed.translations) || parsed.translations.length !== tasks.length || parsed.translations.some(t=>typeof t!=='string' || !t.trim() || t.length>500)) throw new Error('Invalid translation response');
+  return {mode:'ai',translations:parsed.translations.map(t=>t.trim()),notice:'Translated with Gemini AI'};
+ } finally {clearTimeout(timeout);}
+}
 const server=http.createServer(async(req,res)=>{
  const url=new URL(req.url,'http://localhost');
+ if(req.method==='POST' && url.pathname==='/api/translate') {
+  try {
+   const body=await readBody(req);
+   if(!Array.isArray(body.tasks) || body.tasks.length<1 || body.tasks.length>12 || !['ai','demo'].includes(body.mode) || body.tasks.some(t=>typeof t?.descriptionEnglish!=='string' || !t.descriptionEnglish.trim() || t.descriptionEnglish.length>300)) return send(res,400,{error:'Invalid translation request'});
+   return send(res,200,await translateTasks(body.tasks,body.mode));
+  } catch(e) {return send(res,503,{error:'Translation failed: '+e.message});}
+ }
  if(req.method==='POST' && url.pathname==='/api/workflow') {
   try {
    const body=await readBody(req);
