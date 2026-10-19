@@ -1,0 +1,82 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlowPilot AI | Application Map</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:#edf4ff;font:16px system-ui,sans-serif}
+main{max-width:850px;margin:auto;padding:36px 20px 70px}
+h1{color:#75e1d1;font-size:2.3rem}
+h2{margin-top:36px;color:#75e1d1}
+p,li{line-height:1.7}
+.card{background:#172239;border:1px solid #354761;border-radius:14px;padding:20px;margin:12px 0}
+.arrow{text-align:center;color:#75e1d1;font-size:26px}
+small{color:#b7c9e0}
+code{color:#a5eadf;overflow-wrap:anywhere}
+a{color:#75e1d1}
+</style>
+</head>
+<body>
+<main>
+<p>TIERRA AI LABS / LEARNING PROJECT</p>
+<h1>FlowPilot AI — App Map</h1>
+<p>A bilingual workflow planner for small businesses.</p>
+
+<h2>Application flow</h2>
+<div class="card"><strong>1. Enter a request</strong>
+<p>The user describes a business goal.</p>
+<small>public/index.html</small></div>
+<div class="arrow">↓</div>
+<div class="card"><strong>2. Send to the server</strong>
+<p>The browser submits JSON to <code>POST /api/workflow</code>.</p>
+<small>public/app.js</small></div>
+<div class="arrow">↓</div>
+<div class="card"><strong>3. Generate tasks</strong>
+<p>The Node.js server validates input. Without a Gemini API key,
+it returns clearly labeled sample tasks. With a configured key,
+it requests tasks from Gemini and validates the response.</p>
+<small>server.js</small></div>
+<div class="arrow">↓</div>
+<div class="card"><strong>4. Track progress</strong>
+<p>The browser displays priorities and interactive checkboxes.
+Completion progress updates without changing task IDs.</p>
+<small>public/app.js and public/style.css</small></div>
+<div class="arrow">↓</div>
+<div class="card"><strong>5. Switch languages</strong>
+<p>The browser sends tasks to <code>POST /api/translate</code>.
+Demo mode displays generic Spanish examples; configured Gemini
+mode requests translations. The original English descriptions
+and checkbox completion states are preserved.</p>
+<small>public/app.js and server.js</small></div>
+
+<h2>Important files</h2>
+<ul>
+<li><code>server.js</code> — HTTP server, API routes, validation, Gemini integration</li>
+<li><code>public/index.html</code> — Dashboard structure</li>
+<li><code>public/app.js</code> — User interactions and task state</li>
+<li><code>public/style.css</code> — Responsive interface and accessibility styling</li>
+<li><code>server.test.js</code> — Automated application tests</li>
+<li><code>devpost/</code> — Project planning and learning documentation</li>
+</ul>
+
+<h2>Limitations and next improvements</h2>
+<ul>
+<li>Demo translations are examples, not complete translations of arbitrary requests.</li>
+<li>Task progress is held in browser memory and resets on page reload.</li>
+<li>Live Gemini generation and translation require a valid API key.</li>
+<li>Potential future work: saved workflows, export, and more languages.</li>
+</ul>
+
+<h2>Learning reflection</h2>
+<p>The browser collects input, the server validates it,
+and the resulting tasks return as JSON. The interface renders
+those tasks and manages completion state. Translation changes
+the displayed descriptions without replacing the original tasks.</p>
+
+<p><a href="https://github.com/kenlora-7796/flowpilot-ai">
+View the source code on GitHub</a></p>
+</main>
+</body>
+</html>
